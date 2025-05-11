@@ -17,14 +17,22 @@ const LoginForm = () => {
   const validateForm = () => {
     const newErrors = {};
 
+    // Валідація email
     if (!formData.email.trim()) {
       newErrors.email = "Email є обов'язковим.";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Некоректний формат email.";
     }
 
+    // Валідація пароля
     if (!formData.password.trim()) {
       newErrors.password = "Пароль є обов'язковим.";
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Пароль має містити щонайменше 6 символів.";
+    } else if (!/[A-Z]/.test(formData.password)) {
+      newErrors.password = "Пароль має містити хоча б одну велику літеру.";
+    } else if (!/[0-9]/.test(formData.password)) {
+      newErrors.password = "Пароль має містити хоча б одну цифру.";
     }
 
     setErrors(newErrors);

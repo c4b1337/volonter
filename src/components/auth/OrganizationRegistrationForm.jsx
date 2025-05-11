@@ -4,15 +4,12 @@ import FirebaseService from "../../firebase/FirebaseService";
 const OrganizationRegistrationForm = () => {
   const [formData, setFormData] = useState({
     name: "",
-    foundedDate: "",
     audience: "",
     purpose: "",
-    members: "",
     email: "",
     password: "",
     address: "",
     phone: "",
-    website: "",
     socialLinks: [""],
   });
 
@@ -36,45 +33,65 @@ const OrganizationRegistrationForm = () => {
   const validateForm = () => {
     const newErrors = {};
 
+    // Валідація імені
     if (!formData.name.trim()) {
       newErrors.name = "Ім'я є обов'язковим.";
+    } else if (formData.name.length < 3) {
+      newErrors.name = "Ім'я має містити щонайменше 3 символи.";
     }
 
-    if (!formData.foundedDate.trim()) {
-      newErrors.foundedDate = "Дата заснування є обов'язковою.";
-    }
-
+    // Валідація email
     if (!formData.email.trim()) {
       newErrors.email = "Email є обов'язковим.";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Некоректний формат email.";
     }
 
+    // Валідація пароля
     if (!formData.password.trim()) {
       newErrors.password = "Пароль є обов'язковим.";
     } else if (formData.password.length < 6) {
       newErrors.password = "Пароль має містити щонайменше 6 символів.";
+    } else if (!/[A-Z]/.test(formData.password)) {
+      newErrors.password = "Пароль має містити хоча б одну велику літеру.";
+    } else if (!/[0-9]/.test(formData.password)) {
+      newErrors.password = "Пароль має містити хоча б одну цифру.";
     }
 
+    // Валідація аудиторії
     if (!formData.audience.trim()) {
       newErrors.audience = "Аудиторія є обов'язковою.";
+    } else if (formData.audience.length < 5) {
+      newErrors.audience = "Аудиторія має містити щонайменше 5 символів.";
     }
 
+    // Валідація мети
     if (!formData.purpose.trim()) {
       newErrors.purpose = "Мета є обов'язковою.";
+    } else if (formData.purpose.length < 10) {
+      newErrors.purpose = "Мета має містити щонайменше 10 символів.";
     }
 
+    // Валідація адреси
     if (!formData.address.trim()) {
       newErrors.address = "Адреса є обов'язковою.";
+    } else if (formData.address.length < 10) {
+      newErrors.address = "Адреса має містити щонайменше 10 символів.";
     }
 
+    // Валідація телефону
     if (!formData.phone.trim()) {
       newErrors.phone = "Телефон є обов'язковим.";
+    } else if (!/^\+?[0-9]{10,15}$/.test(formData.phone)) {
+      newErrors.phone = "Телефон має бути у форматі +380XXXXXXXXX або містити від 10 до 15 цифр.";
     }
 
-    if (!formData.website.trim()) {
-      newErrors.website = "Вебсайт є обов'язковим.";
-    }
+    // Валідація соцмереж
+    formData.socialLinks.forEach((link, index) => {
+      if (link.trim() && !/^https?:\/\/\S+\.\S+$/.test(link)) {
+        newErrors[`socialLinks_${index}`] = "Некоректне посилання на соцмережу.";
+      }
+    });
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -95,13 +112,10 @@ const OrganizationRegistrationForm = () => {
         password: formData.password,
         uid: user.uid,
         socialLinks: formData.socialLinks.filter((link) => link.trim() !== ""),
-        foundedDate: formData.foundedDate,
         audience: formData.audience,
         purpose: formData.purpose,
-        members: formData.members,
         address: formData.address,
         phone: formData.phone,
-        website: formData.website,
       };
 
       await FirebaseService.saveData("organizations", dataToSave);
@@ -134,20 +148,6 @@ const OrganizationRegistrationForm = () => {
       </div>
       <div className="mb-3">
         <label className="form-label">
-          <i className="fas fa-calendar-alt"></i> Дата заснування
-        </label>
-        <input
-          type="date"
-          className={`form-control ${errors.foundedDate ? "is-invalid" : ""}`}
-          name="foundedDate"
-          value={formData.foundedDate}
-          onChange={handleInputChange}
-          required
-        />
-        {errors.foundedDate && <div className="invalid-feedback">{errors.foundedDate}</div>}
-      </div>
-      <div className="mb-3">
-        <label className="form-label">
           <i className="fas fa-users"></i> Аудиторія
         </label>
         <input
@@ -176,18 +176,6 @@ const OrganizationRegistrationForm = () => {
       </div>
       <div className="mb-3">
         <label className="form-label">
-          <i className="fas fa-user-friends"></i> Члени (через кому)
-        </label>
-        <input
-          type="text"
-          className="form-control"
-          name="members"
-          value={formData.members}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div className="mb-3">
-        <label className="form-label">
           <i className="fas fa-map-marker-alt"></i> Адреса
         </label>
         <input
@@ -213,20 +201,6 @@ const OrganizationRegistrationForm = () => {
           required
         />
         {errors.phone && <div className="invalid-feedback">{errors.phone}</div>}
-      </div>
-      <div className="mb-3">
-        <label className="form-label">
-          <i className="fas fa-globe"></i> Вебсайт
-        </label>
-        <input
-          type="url"
-          className={`form-control ${errors.website ? "is-invalid" : ""}`}
-          name="website"
-          value={formData.website}
-          onChange={handleInputChange}
-          required
-        />
-        {errors.website && <div className="invalid-feedback">{errors.website}</div>}
       </div>
       <div className="mb-3">
         <label className="form-label">
@@ -264,11 +238,14 @@ const OrganizationRegistrationForm = () => {
           <div key={index} className="input-group mb-2">
             <input
               type="url"
-              className="form-control"
+              className={`form-control ${errors[`socialLinks_${index}`] ? "is-invalid" : ""}`}
               placeholder="Посилання на соцмережу"
               value={link}
               onChange={(e) => handleSocialLinkChange(index, e.target.value)}
             />
+            {errors[`socialLinks_${index}`] && (
+              <div className="invalid-feedback">{errors[`socialLinks_${index}`]}</div>
+            )}
           </div>
         ))}
         <button type="button" className="btn btn-outline-secondary" onClick={addSocialLink}>
