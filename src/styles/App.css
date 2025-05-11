@@ -1,7 +1,11 @@
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+}
+
+h1, h2, h3 {
+    font-weight: 700;
 }
 
 h1 {
@@ -12,6 +16,7 @@ h1 {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+    animation: fadeIn 1s ease-in-out;
 }
 
 .button {
@@ -25,4 +30,52 @@ h1 {
 
 .button:hover {
     background-color: #0056b3;
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #0056b3 !important;
+    color: #fff !important;
+}
+
+input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.btn-outline-secondary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    padding: 5px 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #f8f9fa;
+    border-color: #6c757d;
 }

@@ -1,27 +1,36 @@
 import React, { useState } from "react";
-import RegistrationForm from "./RegistrationForm";
-import LoginForm from "./LoginForm";
+import RegistrationForm from "./auth/RegistrationForm";
+import LoginForm from "./auth/LoginForm";
 
 const App = () => {
-  const [isLogin, setIsLogin] = useState(false);
+  const [activeForm, setActiveForm] = useState("login"); // "login" або "registration"
 
   return (
-    <div>
-      <div className="text-center mt-4">
+    <div className="container mt-5">
+      <div className="text-center mb-4">
+        <h1 className="display-5">
+          <i className="fas fa-hands-helping text-primary"></i> Ласкаво просимо
+        </h1>
+        <p className="text-muted">
+          Оберіть, чи хочете <strong>увійти</strong> або <strong>зареєструватися</strong>.
+        </p>
+      </div>
+      <div className="d-flex justify-content-center mb-4">
         <button
-          className={`btn btn-${isLogin ? "outline-primary" : "primary"} me-2`}
-          onClick={() => setIsLogin(false)}
+          className={`btn btn-${activeForm === "login" ? "primary" : "outline-primary"} me-2`}
+          onClick={() => setActiveForm("login")}
         >
-          Register
+          Вхід
         </button>
         <button
-          className={`btn btn-${isLogin ? "primary" : "outline-primary"}`}
-          onClick={() => setIsLogin(true)}
+          className={`btn btn-${activeForm === "registration" ? "primary" : "outline-primary"}`}
+          onClick={() => setActiveForm("registration")}
         >
-          Login
+          Реєстрація
         </button>
       </div>
-      {isLogin ? <LoginForm /> : <RegistrationForm />}
+      {activeForm === "login" && <LoginForm />}
+      {activeForm === "registration" && <RegistrationForm />}
     </div>
   );
 };

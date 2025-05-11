@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import FirebaseService from "../firebase/FirebaseService";
+import FirebaseService from "../../firebase/FirebaseService";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -7,20 +7,44 @@ const LoginForm = () => {
     password: "",
   });
 
+  const [errors, setErrors] = useState({});
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Email є обов'язковим.";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Некоректний формат email.";
+    }
+
+    if (!formData.password.trim()) {
+      newErrors.password = "Пароль є обов'язковим.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
     try {
       const user = await FirebaseService.loginUser(formData.email, formData.password);
-      alert("Login successful!");
+      alert("Вхід успішний!");
       console.log("Logged in user:", user);
     } catch (error) {
       console.error("Error during login:", error.message);
-      alert("Login failed. Please try again.");
+      alert("Вхід не вдався. Перевірте email та пароль.");
     }
   };
 
@@ -39,28 +63,30 @@ const LoginForm = () => {
           </label>
           <input
             type="email"
-            className="form-control"
+            className={`form-control ${errors.email ? "is-invalid" : ""}`}
             name="email"
             value={formData.email}
             onChange={handleInputChange}
             required
           />
+          {errors.email && <div className="invalid-feedback">{errors.email}</div>}
         </div>
         <div className="mb-3">
           <label className="form-label">
-            <i className="fas fa-lock"></i> Password
+            <i className="fas fa-lock"></i> Пароль
           </label>
           <input
             type="password"
-            className="form-control"
+            className={`form-control ${errors.password ? "is-invalid" : ""}`}
             name="password"
             value={formData.password}
             onChange={handleInputChange}
             required
           />
+          {errors.password && <div className="invalid-feedback">{errors.password}</div>}
         </div>
         <button type="submit" className="btn btn-primary w-100">
-          <i className="fas fa-sign-in-alt"></i> Login
+          <i className="fas fa-sign-in-alt"></i> Увійти
         </button>
       </form>
     </div>
