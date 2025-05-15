@@ -5,7 +5,7 @@ const OrganizationRegistrationForm = () => {
   const [formData, setFormData] = useState({
     name: "",
     audience: "",
-    purpose: "",
+    edrpou: "",
     email: "",
     password: "",
     address: "",
@@ -65,11 +65,11 @@ const OrganizationRegistrationForm = () => {
       newErrors.audience = "Аудиторія має містити щонайменше 5 символів.";
     }
 
-    // Валідація мети
-    if (!formData.purpose.trim()) {
-      newErrors.purpose = "Мета є обов'язковою.";
-    } else if (formData.purpose.length < 10) {
-      newErrors.purpose = "Мета має містити щонайменше 10 символів.";
+    // Валідація ЄДРПОУ
+    if (!formData.edrpou.trim()) {
+      newErrors.edrpou = "ЄДРПОУ є обов'язковим.";
+    } else if (!/^\d{8}$/.test(formData.edrpou)) {
+      newErrors.edrpou = "ЄДРПОУ має містити рівно 8 цифр.";
     }
 
     // Валідація адреси
@@ -113,7 +113,7 @@ const OrganizationRegistrationForm = () => {
         uid: user.uid,
         socialLinks: formData.socialLinks.filter((link) => link.trim() !== ""),
         audience: formData.audience,
-        purpose: formData.purpose,
+        edrpou: formData.edrpou,
         address: formData.address,
         phone: formData.phone,
       };
@@ -162,17 +162,17 @@ const OrganizationRegistrationForm = () => {
       </div>
       <div className="mb-3">
         <label className="form-label">
-          <i className="fas fa-bullseye"></i> Мета
+          <i className="fas fa-id-card"></i> ЄДРПОУ
         </label>
         <input
           type="text"
-          className={`form-control ${errors.purpose ? "is-invalid" : ""}`}
-          name="purpose"
-          value={formData.purpose}
+          className={`form-control ${errors.edrpou ? "is-invalid" : ""}`}
+          name="edrpou"
+          value={formData.edrpou}
           onChange={handleInputChange}
           required
         />
-        {errors.purpose && <div className="invalid-feedback">{errors.purpose}</div>}
+        {errors.edrpou && <div className="invalid-feedback">{errors.edrpou}</div>}
       </div>
       <div className="mb-3">
         <label className="form-label">
