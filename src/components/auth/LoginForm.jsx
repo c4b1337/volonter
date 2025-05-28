@@ -35,16 +35,13 @@ const LoginForm = ({ onLoginSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
+    if (!validateForm()) return;
     try {
-      await FirebaseService.loginUser(formData.email, formData.password);
-      onLoginSuccess(); // Викликаємо функцію після успішного входу
+      const user = await FirebaseService.loginUser(formData.email, formData.password);
+      // Отримуємо тип з БД
+      const type = await FirebaseService.getUserType(user.uid);
+      onLoginSuccess(user, type);
     } catch (error) {
-      console.error("Error during login:", error.message);
       alert("Вхід не вдався. Перевірте email та пароль.");
     }
   };

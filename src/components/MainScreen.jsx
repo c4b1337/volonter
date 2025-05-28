@@ -3,32 +3,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "../styles/main.css";
 
-const MainScreen = () => {
-  const [showModal, setShowModal] = useState(false);
+const MainScreen = ({ showModal, handleCreateAd, handleCloseModal, onAddAd, userType }) => {
   const [adData, setAdData] = useState({
     photo: null,
     purpose: "",
     monobank: "",
     socials: [""],
   });
-
-  const handleLogout = () => {
-    window.location.reload();
-  };
-
-  const handleCreateAd = () => {
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setAdData({
-      photo: null,
-      purpose: "",
-      monobank: "",
-      socials: [""],
-    });
-  };
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
@@ -56,49 +37,18 @@ const MainScreen = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Тут ваша логіка відправки даних
-    alert("Оголошення створено!");
+    onAddAd(adData);
+    setAdData({
+      photo: null,
+      purpose: "",
+      monobank: "",
+      socials: [""],
+    });
     handleCloseModal();
   };
 
   return (
-    <div className="d-flex flex-column min-vh-100">
-      {/* Header */}
-      <header className="py-3 mb-4 border-bottom" style={{ background: "#f8f9fa" }}>
-        <div className="container d-flex flex-wrap justify-content-center align-items-center">
-          <a href="/" className="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-dark text-decoration-none">
-            <i className="fas fa-hands-helping fa-2x text-primary me-2"></i>
-            <span className="fs-4 fw-bold">Добро</span>
-          </a>
-          <nav className="d-none d-md-flex align-items-center">
-            <a href="#contacts" className="nav-link px-2 text-muted">Контакти</a>
-            <a href="#faq" className="nav-link px-2 text-muted">FAQ</a>
-            <a href="#ads" className="nav-link px-2 text-muted">Оголошення</a>
-            <span className="text-muted align-self-center ms-2">Головна</span>
-          </nav>
-          {/* Додаємо більший відступ між навігацією та кнопками */}
-          <div className="d-flex align-items-center ms-4">
-            <button
-              className="btn btn-primary ms-2"
-              type="button"
-              onClick={handleCreateAd}
-              title="Створити оголошення"
-            >
-              <i className="fas fa-plus me-1"></i> Оголошення
-            </button>
-            <button
-              className="btn btn-primary ms-2"
-              type="button"
-              onClick={handleLogout}
-              title="Вийти з акаунта"
-            >
-              <i className="fas fa-sign-out-alt"></i>
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Основний контент */}
+    <>
       <main className="container flex-grow-1 d-flex flex-column justify-content-center align-items-center">
         <h1 className="display-5 text-center mb-3">Головна сторінка</h1>
         <p className="text-muted text-center mb-2">
@@ -107,13 +57,12 @@ const MainScreen = () => {
         </p>
       </main>
 
-      {/* Модальне вікно для створення оголошення */}
-      {showModal && (
+      {(showModal && (userType === "volunteer" || userType === "organization")) && (
         <div className="modal fade show d-block" tabIndex="-1" style={{ background: "rgba(0,0,0,0.4)" }}>
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content shadow">
               <div className="modal-header">
-                <h5 className="modal-title"><i className="fas fa-plus me-2"></i>Створити оголошення</h5>
+                <h5 className="modal-title"><i className="fas fa-plus me-2"></i>Оголошення</h5>
                 <button type="button" className="btn-close" aria-label="Close" onClick={handleCloseModal}></button>
               </div>
               <form onSubmit={handleSubmit}>
@@ -218,12 +167,7 @@ const MainScreen = () => {
           </div>
         </div>
       )}
-
-      {/* Футер */}
-      <footer className="text-center text-muted py-3 mt-auto" style={{ background: "#f8f9fa" }}>
-        &copy; {new Date().getFullYear()} Добро. Всі права захищені.
-      </footer>
-    </div>
+    </>
   );
 };
 

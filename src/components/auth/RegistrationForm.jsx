@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import VolunteerRegistrationForm from "./VolunteerRegistrationForm";
 import OrganizationRegistrationForm from "./OrganizationRegistrationForm";
+import UserRegistrationForm from "./UserRegistrationForm";
 import "../../styles/RegistrationForm.css";
 
-const RegistrationForm = () => {
-  const [formType, setFormType] = useState("volunteer"); // "volunteer" або "organization"
+const RegistrationForm = ({ onRegistrationSuccess }) => {
+  const [formType, setFormType] = useState("volunteer"); // "volunteer", "organization", "user"
 
   return (
     <div className="container mt-5 registration-container">
@@ -20,8 +21,13 @@ const RegistrationForm = () => {
             <i className="fas fa-building text-primary"></i> Реєстрація Організації
           </h1>
         )}
+        {formType === "user" && (
+          <h1 className="display-5">
+            <i className="fas fa-user-circle text-primary"></i> Реєстрація Користувача
+          </h1>
+        )}
         <p className="text-muted">
-          Оберіть, чи хочете зареєструватися як <strong>Волонтер</strong> або <strong>Організація</strong>.
+          Оберіть, чи хочете зареєструватися як <strong>Волонтер</strong>, <strong>Організація</strong> або <strong>Користувач</strong>.
         </p>
       </div>
 
@@ -34,17 +40,24 @@ const RegistrationForm = () => {
           Волонтер
         </button>
         <button
-          className={`btn btn-${formType === "organization" ? "primary" : "outline-primary"}`}
+          className={`btn btn-${formType === "organization" ? "primary" : "outline-primary"} me-2`}
           onClick={() => setFormType("organization")}
         >
           Організація
+        </button>
+        <button
+          className={`btn btn-${formType === "user" ? "primary" : "outline-primary"}`}
+          onClick={() => setFormType("user")}
+        >
+          Користувач
         </button>
       </div>
 
       {/* Відображення форми залежно від типу */}
       <div className="form-container">
-        {formType === "volunteer" && <VolunteerRegistrationForm />}
-        {formType === "organization" && <OrganizationRegistrationForm />}
+        {formType === "volunteer" && <VolunteerRegistrationForm onRegistrationSuccess={onRegistrationSuccess} />}
+        {formType === "organization" && <OrganizationRegistrationForm onRegistrationSuccess={onRegistrationSuccess} />}
+        {formType === "user" && <UserRegistrationForm onRegistrationSuccess={onRegistrationSuccess} />}
       </div>
     </div>
   );
