@@ -3,7 +3,7 @@ import RegistrationForm from "./auth/RegistrationForm";
 import LoginForm from "./auth/LoginForm";
 import MainScreen from "./MainScreen";
 import AdsPage from "./AdsPage";
-import FirebaseService from "../firebase/FirebaseService"; // Додайте свій сервіс
+import FirebaseService from "../firebase/FirebaseService"; 
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
